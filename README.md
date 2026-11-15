@@ -6,6 +6,8 @@ LanBeam 是一个跑在 Windows 上的局域网传文件小工具：两台电脑
 
 不装客户端、不注册账号、不限大小、不过任何服务器。
 
+**项目页面**：[https://wwwh793.github.io/lanbeam/](https://wwwh793.github.io/lanbeam/)
+
 ![主界面](docs/img/app-dark.png)
 
 ## 特性
