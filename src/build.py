@@ -103,6 +103,12 @@ def restart_app(exe: Path) -> bool:
         subprocess.run(["taskkill", "/F", "/T", "/IM", name],
                        capture_output=True)
     time.sleep(0.8)
+    # 进程死了才删得掉，前面 tidy_output 那会儿文件还被占着
+    for old in exe.parent.glob("*.exe.old"):
+        try:
+            old.unlink()
+        except OSError:
+            pass
     try:
         subprocess.Popen([str(exe)], cwd=str(exe.parent), close_fds=True)
         return True

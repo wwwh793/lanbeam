@@ -41,7 +41,7 @@ ACRYLIC = {
     "text": "#EAF1FB", "muted": "#94A1B8", "soft": "#243149",
     "trough": "#202B40",
 }
-PROJECT_URL = "https://github.com/"
+PROJECT_URL = "https://wwwh793.github.io/lanbeam/"
 OK = "#12A594"
 WARN = "#E5484D"
 
