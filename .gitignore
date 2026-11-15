@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 打包产物
+build/
+dist/
+*.exe
+*.old
+
+# 本地素材与项目文件（不进仓库）
+成品/
+素材/
+网页/
+脚本/备份/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini

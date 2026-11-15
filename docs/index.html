@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LanBeam · 同一 Wi-Fi，双击就传</title>
+<meta name="description" content="LanBeam 是一个 Windows 局域网传文件的小工具：免安装、不限大小、断点续传、文件夹原样保留。MIT 开源。">
+<meta property="og:title" content="LanBeam · 同一 Wi-Fi，双击就传">
+<meta property="og:description" content="免安装的 Windows 局域网传文件工具：断点续传、文件夹原样、右键直接发。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="img/app-dark.png">
+<link rel="icon" href="img/icon.png">
+<style>
+:root{
+  --bg:#070a10; --card:#0e1520; --card-2:#111a27; --line:#1e2a3a;
+  --text:#e8eef8; --muted:#8b97ab; --accent:#4c8dff; --accent-2:#2f6bff;
+  --ok:#12a594; --warn:#e5484d;
+  --radius:16px; --radius-sm:12px;
+  --max:1120px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:"Microsoft YaHei UI","PingFang SC","Hiragino Sans GB",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(900px 460px at 12% -8%, rgba(76,141,255,.18), transparent 60%),
+    radial-gradient(700px 380px at 92% 4%, rgba(47,107,255,.12), transparent 62%),
+    linear-gradient(180deg,#070a10 0%,#070a10 55%,#060910 100%);
+}
+body::after{
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.35;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(1000px 500px at 50% 0%,#000 30%,transparent 75%);
+}
+a{color:inherit; text-decoration:none}
+img{max-width:100%; display:block}
+.wrap{max-width:var(--max); margin:0 auto; padding:0 24px}
+
+/* 顶栏 */
+header{
+  position:sticky; top:0; z-index:20;
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  background:rgba(7,10,16,.72); border-bottom:1px solid rgba(30,42,58,.7);
+}
+.nav{display:flex; align-items:center; gap:16px; height:64px}
+.brand{display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px}
+.brand img{width:30px; height:30px; border-radius:8px}
+.nav-links{display:flex; gap:22px; margin-left:28px; color:var(--muted); font-size:14px}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{margin-left:auto; display:flex; gap:10px; align-items:center}
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  height:42px; padding:0 18px; border-radius:var(--radius-sm);
+  font-size:14px; font-weight:600; border:1px solid transparent;
+  transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  white-space:nowrap;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--accent); color:#fff}
+.btn-primary:hover{background:var(--accent-2)}
+.btn-ghost{background:rgba(255,255,255,.03); border-color:var(--line); color:var(--text)}
+.btn-ghost:hover{background:rgba(255,255,255,.06); border-color:#2b3a50}
+.btn-sm{height:36px; padding:0 14px; font-size:13px}
+
+/* 首屏 */
+.hero{padding:76px 0 40px; display:grid; grid-template-columns:1.05fr .95fr; gap:48px; align-items:center}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--accent);
+  background:rgba(76,141,255,.10); border:1px solid rgba(76,141,255,.25);
+  padding:5px 12px; border-radius:999px; margin-bottom:20px;
+}
+.hero h1{font-size:52px; line-height:1.14; margin:0 0 18px; letter-spacing:-.5px}
+.hero h1 span{color:var(--accent)}
+.hero p.lead{font-size:17px; color:var(--muted); margin:0 0 28px; max-width:560px}
+.cta{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px}
+.meta{display:flex; gap:18px; flex-wrap:wrap; color:var(--muted); font-size:13px}
+.meta b{color:var(--text); font-weight:600}
+
+.shot-frame{
+  border:1px solid var(--line); border-radius:14px; overflow:hidden;
+  background:var(--card); box-shadow:0 30px 80px rgba(0,0,0,.55);
+}
+.shot-frame img{width:100%}
+
+/* 通用段落 */
+section{padding:64px 0}
+.sec-head{max-width:720px; margin-bottom:36px}
+.sec-head .kicker{color:var(--accent); font-size:13px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase}
+.sec-head h2{font-size:32px; margin:8px 0 10px; letter-spacing:-.3px}
+.sec-head p{color:var(--muted); margin:0}
+
+/* 特性 */
+.grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+.card{
+  background:linear-gradient(180deg,var(--card),var(--card-2));
+  border:1px solid var(--line); border-radius:var(--radius); padding:22px;
+  transition:border-color .2s ease, transform .2s ease;
+}
+.card:hover{border-color:#2b3a50; transform:translateY(-2px)}
+.card .ico{
+  width:38px; height:38px; border-radius:11px; display:grid; place-items:center;
+  background:rgba(76,141,255,.12); border:1px solid rgba(76,141,255,.22);
+  margin-bottom:14px;
+}
+.card .ico svg{width:19px; height:19px; stroke:var(--accent); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.card h3{font-size:16px; margin:0 0 6px}
+.card p{font-size:14px; color:var(--muted); margin:0}
+
+/* 截图 */
+.gallery{display:grid; grid-template-columns:repeat(2,1fr); gap:18px}
+.gallery figure{margin:0}
+.gallery figcaption{color:var(--muted); font-size:13px; margin-top:10px}
+.gallery .wide{grid-column:1 / -1}
+
+/* 三步 */
+.steps{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; counter-reset:step}
+.step{position:relative; padding-top:8px}
+.step .num{
+  width:30px; height:30px; border-radius:9px; display:grid; place-items:center;
+  background:rgba(76,141,255,.14); border:1px solid rgba(76,141,255,.28);
+  color:var(--accent); font-weight:700; font-size:14px; margin-bottom:12px;
+}
+.step h3{font-size:16px; margin:0 0 4px}
+.step p{color:var(--muted); font-size:14px; margin:0}
+
+/* 下载 */
+.download{
+  display:grid; grid-template-columns:1.1fr .9fr; gap:28px; align-items:center;
+  background:linear-gradient(135deg,rgba(76,141,255,.12),rgba(76,141,255,.02) 55%),var(--card);
+  border:1px solid rgba(76,141,255,.25); border-radius:20px; padding:32px;
+}
+.download h2{font-size:28px; margin:0 0 8px}
+.download p{color:var(--muted); margin:0 0 20px; font-size:14px}
+.dl-actions{display:flex; gap:12px; flex-wrap:wrap}
+.dl-note{font-size:12.5px; color:var(--muted); margin-top:14px}
+.dl-facts{display:grid; gap:10px}
+.fact{display:flex; justify-content:space-between; gap:16px; font-size:14px; padding:10px 14px; border:1px solid var(--line); border-radius:10px; background:rgba(255,255,255,.02)}
+.fact span{color:var(--muted)}
+.fact b{font-weight:600}
+
+/* FAQ */
+.faq{display:grid; gap:10px; max-width:880px}
+details{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 18px}
+details[open]{border-color:#2b3a50}
+summary{cursor:pointer; font-weight:600; font-size:15px; list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+"; float:right; color:var(--muted); font-weight:400}
+details[open] summary::after{content:"−"}
+details p{color:var(--muted); font-size:14px; margin:10px 0 2px}
+
+/* 页脚 */
+footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted); font-size:13px}
+.foot{display:flex; gap:18px; flex-wrap:wrap; align-items:center}
+.foot .right{margin-left:auto; display:flex; gap:16px}
+
+@media (max-width:980px){
+  .hero{grid-template-columns:1fr; gap:32px; padding-top:52px}
+  .hero h1{font-size:40px}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .download{grid-template-columns:1fr}
+  .nav-links{display:none}
+}
+@media (max-width:640px){
+  .grid,.gallery,.steps{grid-template-columns:1fr}
+  .hero h1{font-size:33px}
+  section{padding:48px 0}
+  .download{padding:22px}
+  .meta{font-size:12.5px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top"><img src="img/icon.png" alt="LanBeam">LanBeam</a>
+    <nav class="nav-links">
+      <a href="#features">功能</a>
+      <a href="#shots">截图</a>
+      <a href="#how">怎么用</a>
+      <a href="#download">下载</a>
+      <a href="#faq">常见问题</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost btn-sm" href="https://github.com/__USER__/lanbeam">GitHub</a>
+      <a class="btn btn-primary btn-sm" href="#download">下载</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Windows 10 / 11 · 免安装 · MIT 开源</div>
+        <h1>同一 Wi-Fi，<br><span>双击就传</span></h1>
+        <p class="lead">两台电脑打开 LanBeam 就能互相看见：选中、发送，对方点一下「是」，文件就进了对方的下载文件夹。不装客户端、不注册、不限大小，传一半断了还能接着传。</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="https://github.com/__USER__/lanbeam/releases/latest">下载 Windows 版 v1.7.0</a>
+          <a class="btn btn-ghost" href="https://github.com/__USER__/lanbeam">查看源码</a>
+        </div>
+        <div class="meta">
+          <span><b>约 29 MB</b> 单文件</span>
+          <span><b>免安装</b> 双击即用</span>
+          <span><b>不需要</b> 管理员权限</span>
+          <span><b>不走</b> 任何服务器</span>
+        </div>
+      </div>
+      <div class="shot-frame"><img src="img/app-dark.png" alt="LanBeam 主界面"></div>
+    </section>
+
+    <section id="features">
+      <div class="sec-head">
+        <div class="kicker">Features</div>
+        <h2>该有的都有，不该有的都没有</h2>
+        <p>不塞广告、不绑账号、不偷偷联网。只做一件事：把文件从这台电脑送到那台。</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></div>
+          <h3>免安装，单文件</h3>
+          <p>一个 exe，双击就跑。不写注册表（除了右键菜单）、不留后台服务、删了就干净。</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg></div>
+          <h3>断点续传</h3>
+          <p>按「路径 + 大小」算指纹，断了重发会问对方收到哪了，从断点接着传。</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10H3z"/><path d="M3 7V5h4l2 2"/></svg></div>
+          <h3>文件夹原样保留</h3>
+          <p>嵌套目录、空目录、中文名都按原样建出来，不会把一堆文件摊平。</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
+          <h3>关掉窗口也在收</h3>
+          <p>点 × 收进托盘，接收保持在线；再双击 exe 把窗口叫回来，不会开第二个。</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 4v6h6"/><path d="M20 20v-6h-6"/><path d="M20 9a8 8 0 0 0-14.3-2.7"/><path d="M4 15a8 8 0 0 0 14.3 2.7"/></svg></div>
+          <h3>右键直接发</h3>
+          <p>资源管理器里右键「通过 LanBeam 发送」，程序没开也会自己起来接。</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 16 9 5 9-5"/><path d="m3 12 9 5 9-5"/></svg></div>
+          <h3>开源，MIT</h3>
+          <p>传输内核和界面分层，协议文档齐全。想改成自己的用法，随便改。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="shots">
+      <div class="sec-head">
+        <div class="kicker">Screenshots</div>
+        <h2>长这样</h2>
+        <p>深色、浅色、跟随系统三套主题，圆角统一，高分屏不发虚。</p>
+      </div>
+      <div class="gallery">
+        <figure class="wide">
+          <div class="shot-frame"><img src="img/app-progress.png" alt="传输中的界面"></div>
+          <figcaption>传输中：进度、速率、剩余大小一眼看到，可暂停或取消。</figcaption>
+        </figure>
+        <figure>
+          <div class="shot-frame"><img src="img/app-settings.png" alt="设置页"></div>
+          <figcaption>设置：自动接收、收件目录、开机自启、右键菜单。</figcaption>
+        </figure>
+        <figure>
+          <div class="shot-frame"><img src="img/app-light.png" alt="浅色主题"></div>
+          <figcaption>浅色主题，跟随系统自动切换。</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="sec-head">
+        <div class="kicker">How it works</div>
+        <h2>三步就传完了</h2>
+        <p>不用加好友、不用输 IP、不用建共享文件夹。</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>两边都打开</h3>
+          <p>连同一个 Wi-Fi 或交换机，各自双击 LanBeam.exe。首次运行防火墙提示选「允许」。</p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h3>选中对方</h3>
+          <p>左边列表约两秒自动出现对方设备，点中它，选「发送文件…」或「发送文件夹…」。</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3>对方点是</h3>
+          <p>对方弹窗点「是」，内容进他的「下载\LanBeam」。想免确认就打开「自动接收」。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="download">
+      <div class="download">
+        <div>
+          <h2>下载 LanBeam</h2>
+          <p>免安装，解压即用。Windows 10 / 11（64 位）。</p>
+          <div class="dl-actions">
+            <a class="btn btn-primary" href="https://github.com/__USER__/lanbeam/releases/latest/download/LanBeam.exe">下载 LanBeam.exe</a>
+            <a class="btn btn-ghost" href="https://github.com/__USER__/lanbeam/releases/latest">查看发布包（含说明）</a>
+          </div>
+          <div class="dl-note">
+            首次运行如果被 SmartScreen 拦下：点「更多信息」→「仍要运行」。程序未签名，这是正常提示。
+          </div>
+        </div>
+        <div class="dl-facts">
+          <div class="fact"><span>版本</span><b>v1.7.0</b></div>
+          <div class="fact"><span>大小</span><b>28.7 MB（exe）</b></div>
+          <div class="fact"><span>系统</span><b>Windows 10 / 11 x64</b></div>
+          <div class="fact"><span>许可</span><b>MIT</b></div>
+          <div class="fact"><span>端口</span><b>TCP 47821 / UDP 47820</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="sec-head">
+        <div class="kicker">FAQ</div>
+        <h2>常被问到的</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>只能收、发不出去？</summary>
+          <p>对方电脑的 Windows 防火墙拦了入站。在对方电脑上：关掉 LanBeam → 右键「放行防火墙（管理员运行）.bat」以管理员运行 → 重开。包里带了这个脚本。</p>
+        </details>
+        <details>
+          <summary>看不到对方的设备？</summary>
+          <p>访客 Wi-Fi 常开 AP 隔离，同一网络也互相看不见。换成主网络，或点「手动添加」，填对方的 IP:端口 和界面上的令牌。</p>
+        </details>
+        <details>
+          <summary>文件会经过你们服务器吗？</summary>
+          <p>不会。LanBeam 没有服务器：UDP 广播发现 + 局域网内 HTTP 直传，数据不出局域网。也正因为这样，传输是明文的，敏感文件请先加密压缩再传。</p>
+        </details>
+        <details>
+          <summary>支持手机、平板吗？</summary>
+          <p>目前的版本是 Windows 版。传输协议已经文档化，其他平台可以照着实现；做好了会在这里说。</p>
+        </details>
+        <details>
+          <summary>传大文件会不会卡内存？</summary>
+          <p>不会。1 MB 分块流式发送，内存占用恒定；实测回环 400 MB/s 以上，千兆网络能跑满。</p>
+        </details>
+        <details>
+          <summary>有什么已知限制？</summary>
+          <p>明文传输、一次只能发一个文件夹（多个文件可以多选）、不支持 0 字节的空文件、收件目录默认固定在「下载\LanBeam」（可在设置里改）。</p>
+        </details>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 LanBeam · MIT License</span>
+    <span>Windows 10 / 11</span>
+    <div class="right">
+      <a href="https://github.com/__USER__/lanbeam">GitHub</a>
+      <a href="https://github.com/__USER__/lanbeam/releases">版本记录</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
