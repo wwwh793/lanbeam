@@ -12,7 +12,7 @@
 from ui_style import STYLE as _STYLE
 
 
-BASE = (1, 7, 0)
+BASE = (1, 7, 2)
 
 
 def _fmt(parts) -> str:

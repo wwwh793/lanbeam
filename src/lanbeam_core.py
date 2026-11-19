@@ -10,6 +10,7 @@ import queue
 import secrets
 import shutil
 import socket
+import struct
 import threading
 import time
 import uuid
@@ -24,7 +25,8 @@ APP_NAME = "LanBeam"
 DISCOVERY_PORT = 47820
 DEFAULT_HTTP_PORT = 47821
 CHUNK = 1 << 20
-PEER_TTL = 12
+PEER_TTL = 30          # 掉线判定上限（后台广播稀疏时）
+PEER_TTL_MIN = 8       # 掉线判定下限（前台广播 2 秒时，杀进程约 8 秒消失）
 BEACON_INTERVAL = 2.0
 INBOX_NAME = "LanBeam"
 
@@ -193,12 +195,68 @@ def local_ips() -> set:
     return {ip for ip in ips if not ip.startswith("127.")}
 
 
+def ipv4_interfaces() -> list:
+    """当前网卡的 [(ip, mask)]，走 iphlpapi 的 GetIpAddrTable，不依赖第三方库。
+
+    Windows 上只靠 255.255.255.255 会被"跃点最低"的网卡接走——这台机器上是
+    VMware 虚拟网卡（35 < WLAN 45），广播根本到不了真实局域网。所以必须按网卡
+    算出各自子网广播地址，并绑着源地址发。
+    """
+    if os.name != "nt":
+        return []
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        class ROW(ctypes.Structure):
+            _fields_ = [("dwAddr", wintypes.DWORD), ("dwIndex", wintypes.DWORD),
+                        ("dwMask", wintypes.DWORD), ("dwBCastAddr", wintypes.DWORD),
+                        ("dwReasmSize", wintypes.DWORD),
+                        ("unused1", ctypes.c_ushort), ("wType", ctypes.c_ushort)]
+
+        size = wintypes.ULONG(0)
+        ctypes.windll.iphlpapi.GetIpAddrTable(None, ctypes.byref(size), 0)
+        if size.value < 8:
+            return []
+        buf = ctypes.create_string_buffer(size.value)
+        if ctypes.windll.iphlpapi.GetIpAddrTable(buf, ctypes.byref(size), 0) != 0:
+            return []
+        count = ctypes.cast(buf, ctypes.POINTER(wintypes.DWORD)).contents.value
+        rows = ctypes.cast(ctypes.addressof(buf) + 4, ctypes.POINTER(ROW))
+        out = []
+        for i in range(count):
+            row = rows[i]
+            ip = socket.inet_ntoa(struct.pack("<L", row.dwAddr))
+            mask = socket.inet_ntoa(struct.pack("<L", row.dwMask))
+            if ip.startswith("127.") or ip == "0.0.0.0":
+                continue
+            out.append((ip, mask))
+        return out
+    except Exception:
+        return []
+
+
+def broadcast_addr(ip: str, mask: str) -> str:
+    ip_i = struct.unpack("!I", socket.inet_aton(ip))[0]
+    mask_i = struct.unpack("!I", socket.inet_aton(mask))[0]
+    return socket.inet_ntoa(struct.pack("!I", ip_i | (~mask_i & 0xFFFFFFFF)))
+
+
 def broadcast_targets() -> list:
+    """每张网卡的真实子网广播地址（按掩码算，不是按 /24 猜）。"""
     targets = {"255.255.255.255"}
-    for ip in local_ips():
-        parts = ip.split(".")
-        if len(parts) == 4:
-            targets.add(".".join(parts[:3] + ["255"]))
+    rows = ipv4_interfaces()
+    if rows:
+        for ip, mask in rows:
+            try:
+                targets.add(broadcast_addr(ip, mask))
+            except OSError:
+                continue
+    else:
+        for ip in local_ips():
+            parts = ip.split(".")
+            if len(parts) == 4:
+                targets.add(".".join(parts[:3] + ["255"]))
     return sorted(targets)
 
 
@@ -212,6 +270,9 @@ class Peer:
     port: int
     token: str = ""
     last_seen: float = field(default_factory=time.time)
+    # 对方广播的平均间隔：前台约 2 秒，息屏后台会被系统拉长到 10 秒以上。
+    # 掉线时间按它算（见 snapshot），否则后台的平板会在列表里反复闪现。
+    interval: float = 2.0
 
     @property
     def label(self) -> str:
@@ -225,11 +286,13 @@ class Discovery:
         self.lock = threading.Lock()
         self.stop = threading.Event()
         self.sock = None
+        self.tx = {}
         self.port = DISCOVERY_PORT
         self.shared_port = False
         self.rx_count = 0
         self.rx_seen = {}
         self.last_rx = 0.0
+        self._last_reply = {}
 
     def start(self):
         try:
@@ -260,26 +323,77 @@ class Discovery:
                 self.sock.close()
         except Exception:
             pass
+        self._close_tx()
         self.stop = threading.Event()
         self.sock = None
         self.start()
         return self.port
 
-    def _payload(self) -> bytes:
-        return json.dumps({
-            "app": APP_NAME, "v": 2, "id": self.core.peer_id,
-            "name": self.core.name, "port": self.core.port,
-            "rport": self.port,
-            "token": self.core.token}, ensure_ascii=False).encode("utf-8")
+    def _tx_socket(self, ip: str):
+        """绑在指定网卡上的发送 socket：源地址定死了，广播才会从这张网卡出去。"""
+        s = self.tx.get(ip)
+        if s is None:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            s.bind((ip, 0))
+            self.tx[ip] = s
+        return s
 
-    def _beacon(self):
-        while not self.stop.is_set():
-            payload = self._payload()
+    def _close_tx(self):
+        for s in self.tx.values():
+            try:
+                s.close()
+            except Exception:
+                pass
+        self.tx.clear()
+
+    def _broadcast(self, payload):
+        rows = ipv4_interfaces()
+        if not rows:
             for addr in broadcast_targets():
                 try:
                     self.sock.sendto(payload, (addr, DISCOVERY_PORT))
                 except Exception:
                     pass
+            return
+        for ip, mask in rows:
+            try:
+                subnet = broadcast_addr(ip, mask)
+            except OSError:
+                continue
+            for dst in (subnet, "255.255.255.255"):
+                try:
+                    self._tx_socket(ip).sendto(payload, (dst, DISCOVERY_PORT))
+                except Exception:
+                    try:
+                        self._tx_socket(ip).close()
+                    except Exception:
+                        pass
+                    self.tx.pop(ip, None)
+
+    def _payload(self, ack: bool = False) -> bytes:
+        msg = {"app": APP_NAME, "v": 2, "id": self.core.peer_id,
+               "name": self.core.name, "port": self.core.port,
+               "rport": self.port,
+               "token": self.core.token}
+        # ack=1 表示"这是对收到广播的即时回执"，收到回执不再回执，避免两边互相刷屏
+        if ack:
+            msg["ack"] = 1
+        return json.dumps(msg, ensure_ascii=False).encode("utf-8")
+
+    def kick(self):
+        """点「刷新」时立刻催一轮：广播一次，对方收到会立刻单播回执。"""
+        try:
+            self._broadcast(self._payload())
+        except Exception:
+            LOG.exception("kick failed")
+
+    def _beacon(self):
+        while not self.stop.is_set():
+            try:
+                self._broadcast(self._payload())
+            except Exception:
+                LOG.exception("beacon failed")
             self.stop.wait(BEACON_INTERVAL)
 
     def _listen(self):
@@ -304,25 +418,50 @@ class Discovery:
                 continue
             if not peer.port:
                 continue
-            known = self.peers.get(peer.id)
+            now = time.time()
             with self.lock:
+                # 同一台设备重启后 id 会变：地址一样就把旧条目顶掉，别在界面上留两行
+                for key in [k for k, p in self.peers.items()
+                            if k != peer.id and p.host == peer.host and p.port == peer.port]:
+                    LOG.info("设备重启，替换旧条目：%s (%s:%s)", peer.name, peer.host, peer.port)
+                    del self.peers[key]
+                old = self.peers.get(peer.id)
+                if old is not None:
+                    gap = now - old.last_seen
+                    if 0.2 < gap < 60:
+                        peer.interval = max(1.0, min(30.0, 0.7 * old.interval + 0.3 * gap))
+                    else:
+                        peer.interval = old.interval
+                else:
+                    LOG.info("发现 %s (%s:%s)", peer.name, peer.host, peer.port)
+                peer.last_seen = now
                 self.peers[peer.id] = peer
                 self.rx_count += 1
                 self.rx_seen[addr[0]] = peer.name
                 self.last_rx = time.time()
-            # 对方若在备用端口，回一条单播，让它也能看到我们
-            if known is None or time.time() - known.last_seen > 5:
-                try:
-                    rport = int(obj.get("rport") or DISCOVERY_PORT)
-                    if rport and rport != DISCOVERY_PORT:
-                        self.sock.sendto(self._payload(), (addr[0], rport))
-                except Exception:
-                    pass
+            # 收到对方广播就立刻单播回一条：不用等我们下一个 2 秒周期，发现瞬间完成
+            if not obj.get("ack"):
+                now = time.time()
+                if now - self._last_reply.get(addr[0], 0) >= 0.2:
+                    self._last_reply[addr[0]] = now
+                    try:
+                        rport = int(obj.get("rport") or DISCOVERY_PORT)
+                        self.sock.sendto(self._payload(ack=True),
+                                         (addr[0], rport or DISCOVERY_PORT))
+                    except Exception:
+                        pass
+
+    def _ttl(self, peer: Peer) -> float:
+        """按对方自己的广播节奏算掉线时间：前台 2 秒 → 8 秒判死；后台 12 秒 → 30 秒判死。
+        这样前台用着的时候杀进程几秒就消失，后台挂着的平板又不会一闪一闪。"""
+        return max(PEER_TTL_MIN, min(PEER_TTL, peer.interval * 3.0))
 
     def snapshot(self) -> list:
         now = time.time()
         with self.lock:
-            for k in [k for k, p in self.peers.items() if now - p.last_seen > PEER_TTL]:
+            for k in [k for k, p in self.peers.items() if now - p.last_seen > self._ttl(p)]:
+                gone = self.peers[k]
+                LOG.info("设备离线 %s (%s:%s)", gone.name, gone.host, gone.port)
                 del self.peers[k]
             return sorted(self.peers.values(), key=lambda p: p.name.lower())
 

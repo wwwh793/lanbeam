@@ -1,7 +1,7 @@
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 7, 0, 0),
-    prodvers=(1, 7, 0, 0),
+    filevers=(1, 7, 2, 0),
+    prodvers=(1, 7, 2, 0),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -15,11 +15,11 @@ VSVersionInfo(
         '080404b0',
         [StringStruct('CompanyName', 'LanBeam'),
          StringStruct('FileDescription', 'LanBeam 局域网文件互传'),
-         StringStruct('FileVersion', '1.7.0.0'),
+         StringStruct('FileVersion', '1.7.2.0'),
          StringStruct('InternalName', 'LanBeam'),
          StringStruct('OriginalFilename', 'LanBeam.exe'),
          StringStruct('ProductName', 'LanBeam'),
-         StringStruct('ProductVersion', '1.7.0.0')])
+         StringStruct('ProductVersion', '1.7.2.0')])
     ]),
     VarFileInfo([VarStruct('Translation', [2052, 1200])])
   ]

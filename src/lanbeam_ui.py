@@ -653,6 +653,7 @@ class App(tk.Tk):
         self._last_log = ""
         self._last_log_at = 0.0
         self._peer_at = 0.0
+        self._ids = []
         self.full_log = deque(maxlen=400)
         self.peers = []
         self.rows = {}
@@ -874,7 +875,7 @@ class App(tk.Tk):
                               font=F_SMALL)
         self.count_lbl.pack(side="left", padx=(8, 0))
         ttk.Button(top, text="刷新", style="Tiny.TButton",
-                   command=self._refresh_peers).pack(side="right")
+                   command=self._manual_refresh).pack(side="right")
 
         self.list = ScrollList(card, bg=CARD)
         self.list.pack(fill="both", expand=True, padx=8, pady=(0, 8))
@@ -1209,7 +1210,16 @@ class App(tk.Tk):
         try:
             self._refresh_peers_once()
         finally:
-            self.after(1000, self._refresh_peers)
+            self.after(500, self._refresh_peers)
+
+    def _manual_refresh(self):
+        """点「刷新」：立刻广播催一轮，再连刷几帧，别让人干等。"""
+        try:
+            self.core.discovery.kick()
+        except Exception:
+            pass
+        for delay in (80, 300, 700, 1200):
+            self.after(delay, self._refresh_peers_once)
 
     def _refresh_peers_once(self):
         if getattr(self, "view", "main") == "settings":
@@ -1218,14 +1228,18 @@ class App(tk.Tk):
         if lst is None or not lst.winfo_exists():
             return
         peers = self.core.discovery.snapshot()
-        if not peers and self.peers and time.time() - self._peer_at < 6:
+        if not peers and self.peers and time.time() - self._peer_at < 4:
             return
         if peers:
             self._peer_at = time.time()
         labels = [p.label for p in peers]
+        ids = [p.id for p in peers]
         self.peers = peers
-        if labels != self._labels or len(self.rows) != len(peers):
+        if labels != self._labels or ids != self._ids or len(self.rows) != len(peers):
+            old_sel = self.rows.get(self.selected_id) if self.selected_id else None
+            old_addr = (old_sel.peer.host, old_sel.peer.port) if old_sel is not None else None
             self._labels = labels
+            self._ids = ids
             self.list.clear()
             self.rows = {}
             if not peers:
@@ -1239,10 +1253,20 @@ class App(tk.Tk):
             self.list.update_bar()
             self.count_lbl.set_text(len(peers))
             if self.selected_id and self.selected_id not in self.rows:
-                self.selected_id = None
-                self.target_lbl.configure(text="先在左侧选一台设备")
+                # 设备重启换了 id：地址没变就接着选中，不用再点一次
+                if old_addr is not None:
+                    for p in peers:
+                        if (p.host, p.port) == old_addr:
+                            self.selected_id = p.id
+                            break
+                if self.selected_id not in self.rows:
+                    self.selected_id = None
+                    self.target_lbl.configure(text="先在左侧选一台设备")
             if self.selected_id:
                 self.rows[self.selected_id].set_selected(True)
+                sel = next((p for p in peers if p.id == self.selected_id), None)
+                if sel is not None:
+                    self.target_lbl.configure(text=f"发送到 {sel.name}")
         self.list.update_bar()
 
     def select_peer(self, pid, ask_pending=True):
@@ -1407,6 +1431,7 @@ class App(tk.Tk):
             w.destroy()
         self.rows = {}
         self._labels = []
+        self._ids = []
         self.selected_id = None
         self.configure(bg=BG)
         self._styles()
