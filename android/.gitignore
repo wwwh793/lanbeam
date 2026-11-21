@@ -1,0 +1,5 @@
+_build/
+dist/
+签名/
+.gradle/
+local.properties

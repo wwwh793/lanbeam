@@ -121,9 +121,10 @@ section{padding:64px 0}
 .gallery .wide{grid-column:1 / -1}
 
 /* 安卓截图 */
-.android-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:16px;align-items:start}
+.android-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start}
 .android-grid figure{margin:0}
 .android-grid .col{display:grid;gap:16px}
+@media (max-width:980px){.android-grid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:640px){.android-grid{grid-template-columns:1fr}}
 
 /* 三步 */
@@ -212,7 +213,7 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
         <p class="lead">两台电脑打开 LanBeam 就能互相看见：选中、发送，对方点一下「是」，文件就进了对方的下载文件夹。不装客户端、不注册、不限大小，传一半断了还能接着传。</p>
         <div class="cta">
           <a class="btn btn-primary" href="#download">下载 Windows 版 v1.7.2</a>
-          <a class="btn btn-ghost" href="#android">安卓版 v1.0.0</a>
+          <a class="btn btn-ghost" href="#android">安卓版 v1.0.1</a>
         </div>
         <div class="meta">
           <span><b>约 29 MB</b> 单文件</span>
@@ -290,9 +291,13 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
       <div class="sec-head">
         <div class="kicker">Android</div>
         <h2>手机上也能收、也能发</h2>
-        <p>同一套协议，安卓端 1.0.0 从零实现：自动发现电脑、接收文件、发送文件 / 文件夹 / 相册，断了接着传，收件箱一键导出到「下载/LanBeam」。不申请存储权限，没有广告和统计。</p>
+        <p>同一套协议，安卓端 1.0.1 从零实现：自动发现电脑、接收文件、发送文件 / 文件夹 / 相册，断了接着传，收件箱一键导出到「下载/LanBeam」。不申请存储权限，没有广告和统计。</p>
       </div>
       <div class="android-grid">
+        <figure>
+          <div class="shot-frame"><img src="img/android-main.png" alt="安卓端主界面"></div>
+          <figcaption>主界面：自动发现同一 Wi-Fi 下的电脑，选中后从下方三个入口发送。</figcaption>
+        </figure>
         <div class="col">
           <figure>
             <div class="shot-frame"><img src="img/android-transfer.png" alt="安卓端接收中"></div>
@@ -309,8 +314,9 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
         </figure>
       </div>
       <div class="dl-actions" style="margin-top:20px">
-        <a class="btn btn-primary" href="https://github.com/wwwh793/lanbeam/releases/download/android-v1.0.0/LanBeam-1.0.0.apk">下载安卓版 v1.0.0（APK）</a>
-        <a class="btn btn-ghost" href="https://github.com/wwwh793/lanbeam/releases/download/android-v1.0.0/LanBeam-1.0.0-android.zip">安装说明与压缩包</a>
+        <a class="btn btn-primary" href="https://github.com/wwwh793/lanbeam/releases/download/android-v1.0.1/LanBeam-1.0.1.apk">下载安卓版 v1.0.1（APK）</a>
+        <a class="btn btn-ghost" href="https://github.com/wwwh793/lanbeam/releases/download/android-v1.0.1/LanBeam-1.0.1-android.zip">安装说明与压缩包</a>
+        <a class="btn btn-ghost" href="https://github.com/wwwh793/lanbeam/tree/main/android">安卓源码</a>
       </div>
       <div class="dl-note">
         Android 7.0 及以上，APK 约 81 KB。安装时若提示「未知来源」，允许即可。
@@ -369,13 +375,13 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
           <h2>下载 LanBeam · Android</h2>
           <p>APK 直接安装，不用应用商店。Android 7.0 及以上。</p>
           <div class="dl-actions">
-            <a class="btn btn-primary" href="https://github.com/wwwh793/lanbeam/releases/download/android-v1.0.0/LanBeam-1.0.0.apk">下载安卓版 v1.0.0</a>
-            <a class="btn btn-ghost" href="https://github.com/wwwh793/lanbeam/releases/download/android-v1.0.0/LanBeam-1.0.0-android.zip">压缩包 + 安装说明</a>
+            <a class="btn btn-primary" href="https://github.com/wwwh793/lanbeam/releases/download/android-v1.0.1/LanBeam-1.0.1.apk">下载安卓版 v1.0.1</a>
+            <a class="btn btn-ghost" href="https://github.com/wwwh793/lanbeam/releases/download/android-v1.0.1/LanBeam-1.0.1-android.zip">压缩包 + 安装说明</a>
           </div>
           <div class="dl-note">与 Windows、鸿蒙端互通，协议 v2。传原图、原视频，不压缩。</div>
         </div>
         <div class="dl-facts">
-          <div class="fact"><span>版本</span><b>v1.0.0</b></div>
+          <div class="fact"><span>版本</span><b>v1.0.1</b></div>
           <div class="fact"><span>大小</span><b>81 KB（apk）</b></div>
           <div class="fact"><span>系统</span><b>Android 7.0+</b></div>
           <div class="fact"><span>许可</span><b>MIT</b></div>
@@ -404,7 +410,7 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
         </details>
         <details>
           <summary>支持手机、平板吗？</summary>
-          <p>支持。安卓端 1.0.0 已经发布，可以直接装 APK；鸿蒙端也做好了，正在准备上架。三端共用同一套协议，同一 Wi-Fi 下互相能发现、能收发。</p>
+          <p>支持。安卓端 1.0.1 已经发布，可以直接装 APK；鸿蒙端也做好了，正在准备上架。三端共用同一套协议，同一 Wi-Fi 下互相能发现、能收发。</p>
         </details>
         <details>
           <summary>传大文件会不会卡内存？</summary>
