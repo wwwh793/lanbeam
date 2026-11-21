@@ -1,10 +1,10 @@
 # LanBeam · 局域网文件互传
 
-> 同一 Wi-Fi，双击就传。Windows 10 / 11 · 免安装 · MIT
+> 同一 Wi-Fi，双击就传。Windows 10 / 11 · Android 7.0+ · 免安装 · MIT
 
 LanBeam 是一个跑在 Windows 上的局域网传文件小工具：两台电脑连同一个 Wi-Fi（或同一个交换机），各自打开它，左边两秒内就会出现对方。选中 → 发送文件或文件夹 → 对方点「是」，内容落在对方的 `下载\LanBeam`。
 
-不装客户端、不注册账号、不限大小、不过任何服务器。
+不装客户端、不注册账号、不限大小、不过任何服务器。手机端（Android）在同目录的 Releases 里，同一套协议，和电脑互相收发。
 
 **项目页面**：[https://wwwh793.github.io/lanbeam/](https://wwwh793.github.io/lanbeam/)
 
@@ -23,7 +23,10 @@ LanBeam 是一个跑在 Windows 上的局域网传文件小工具：两台电脑
 
 ## 下载
 
-到 [Releases](../../releases/latest) 下最新的 `LanBeam.exe`，或者带使用说明的完整包。
+到 [Releases](https://github.com/wwwh793/lanbeam/releases) 下载：
+
+- **Windows**：[v1.7.2](https://github.com/wwwh793/lanbeam/releases/tag/v1.7.2) 的 `LanBeam.exe`，或者带使用说明的完整包；
+- **Android**：[Android 1.0.0](https://github.com/wwwh793/lanbeam/releases/tag/android-v1.0.0) 的 `LanBeam-1.0.0.apk`（Android 7.0+，约 81 KB）。
 
 - 未签名，首次运行若被 SmartScreen 拦下：点「更多信息」→「仍要运行」。
 - 需要 Windows 10 / 11（64 位）。不需要管理员权限。

@@ -18,7 +18,7 @@ UDP 广播找人，HTTP 传文件；先谈一次"这批是什么"，再逐个文
   "app": "LanBeam",
   "v": 2,
   "id": "6dd86b5dab3a16b0",
-  "name": "MOYULI的IBN5100",
+  "name": "我的电脑",
   "port": 47821,
   "token": "901426"
 }
@@ -81,7 +81,7 @@ UDP 广播找人，HTTP 传文件；先谈一次"这批是什么"，再逐个文
 响应：
 
 ```json
-{"ok": true, "dir": "C:\\Users\\Lenovo\\Downloads\\LanBeam\\我的照片"}
+{"ok": true, "dir": "C:\\Users\\你的用户名\\Downloads\\LanBeam\\我的照片"}
 ```
 
 失败：403 表示用户拒绝；400 表示清单非法（含路径穿越）；409 表示批次已存在时返回原目录，可重入。
@@ -98,7 +98,7 @@ UDP 广播找人，HTTP 传文件；先谈一次"这批是什么"，再逐个文
 成功响应：
 
 ```json
-{"ok": true, "path": "C:\\Users\\Lenovo\\Downloads\\LanBeam\\我的照片\\说明.txt"}
+{"ok": true, "path": "C:\\Users\\你的用户名\\Downloads\\LanBeam\\我的照片\\说明.txt"}
 ```
 
 ## 3. 路径安全（接收方必须做）

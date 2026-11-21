@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LanBeam · 同一 Wi-Fi，双击就传</title>
-<meta name="description" content="LanBeam 是一个 Windows 局域网传文件的小工具：免安装、不限大小、断点续传、文件夹原样保留。MIT 开源。">
+<meta name="description" content="LanBeam 是一个局域网传文件的小工具：Windows 免安装，安卓装 APK，同一 Wi-Fi 直接互传。不限大小、断点续传、文件夹原样保留。MIT 开源。">
 <meta property="og:title" content="LanBeam · 同一 Wi-Fi，双击就传">
 <meta property="og:description" content="免安装的 Windows 局域网传文件工具：断点续传、文件夹原样、右键直接发。">
 <meta property="og:type" content="website">
@@ -120,6 +120,12 @@ section{padding:64px 0}
 .gallery figcaption{color:var(--muted); font-size:13px; margin-top:10px}
 .gallery .wide{grid-column:1 / -1}
 
+/* 安卓截图 */
+.android-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:16px;align-items:start}
+.android-grid figure{margin:0}
+.android-grid .col{display:grid;gap:16px}
+@media (max-width:640px){.android-grid{grid-template-columns:1fr}}
+
 /* 三步 */
 .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; counter-reset:step}
 .step{position:relative; padding-top:8px}
@@ -185,6 +191,7 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
     <nav class="nav-links">
       <a href="#features">功能</a>
       <a href="#shots">截图</a>
+      <a href="#android">手机版</a>
       <a href="#how">怎么用</a>
       <a href="#download">下载</a>
       <a href="#faq">常见问题</a>
@@ -200,12 +207,12 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
   <div class="wrap">
     <section class="hero">
       <div>
-        <div class="eyebrow">Windows 10 / 11 · 免安装 · MIT 开源</div>
+        <div class="eyebrow">Windows 10 / 11 · Android 7.0+ · 免安装 · MIT 开源</div>
         <h1>同一 Wi-Fi，<br><span>双击就传</span></h1>
         <p class="lead">两台电脑打开 LanBeam 就能互相看见：选中、发送，对方点一下「是」，文件就进了对方的下载文件夹。不装客户端、不注册、不限大小，传一半断了还能接着传。</p>
         <div class="cta">
-          <a class="btn btn-primary" href="https://github.com/wwwh793/lanbeam/releases/latest">下载 Windows 版 v1.7.2</a>
-          <a class="btn btn-ghost" href="https://github.com/wwwh793/lanbeam">查看源码</a>
+          <a class="btn btn-primary" href="#download">下载 Windows 版 v1.7.2</a>
+          <a class="btn btn-ghost" href="#android">安卓版 v1.0.0</a>
         </div>
         <div class="meta">
           <span><b>约 29 MB</b> 单文件</span>
@@ -279,6 +286,38 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
       </div>
     </section>
 
+    <section id="android">
+      <div class="sec-head">
+        <div class="kicker">Android</div>
+        <h2>手机上也能收、也能发</h2>
+        <p>同一套协议，安卓端 1.0.0 从零实现：自动发现电脑、接收文件、发送文件 / 文件夹 / 相册，断了接着传，收件箱一键导出到「下载/LanBeam」。不申请存储权限，没有广告和统计。</p>
+      </div>
+      <div class="android-grid">
+        <div class="col">
+          <figure>
+            <div class="shot-frame"><img src="img/android-transfer.png" alt="安卓端接收中"></div>
+            <figcaption>接收中：进度、速率一眼看到，可随时取消。</figcaption>
+          </figure>
+          <figure>
+            <div class="shot-frame"><img src="img/android-inbox.png" alt="安卓端收件箱"></div>
+            <figcaption>收件箱：打开、导出到「下载/LanBeam」、删除。</figcaption>
+          </figure>
+        </div>
+        <figure>
+          <div class="shot-frame"><img src="img/android-settings.png" alt="安卓端设置页"></div>
+          <figcaption>设置：自动接收、收件箱导出、后台保活提示、明暗主题。</figcaption>
+        </figure>
+      </div>
+      <div class="dl-actions" style="margin-top:20px">
+        <a class="btn btn-primary" href="https://github.com/wwwh793/lanbeam/releases/download/android-v1.0.0/LanBeam-1.0.0.apk">下载安卓版 v1.0.0（APK）</a>
+        <a class="btn btn-ghost" href="https://github.com/wwwh793/lanbeam/releases/download/android-v1.0.0/LanBeam-1.0.0-android.zip">安装说明与压缩包</a>
+      </div>
+      <div class="dl-note">
+        Android 7.0 及以上，APK 约 81 KB。安装时若提示「未知来源」，允许即可。
+        国产系统会在后台冻结应用：想长时间挂着收，到 设置 → 电池 → 应用耗电管理 里允许 LanBeam 后台运行。
+      </div>
+    </section>
+
     <section id="how">
       <div class="sec-head">
         <div class="kicker">How it works</div>
@@ -307,11 +346,11 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
     <section id="download">
       <div class="download">
         <div>
-          <h2>下载 LanBeam</h2>
+          <h2>下载 LanBeam · Windows</h2>
           <p>免安装，解压即用。Windows 10 / 11（64 位）。</p>
           <div class="dl-actions">
-            <a class="btn btn-primary" href="https://github.com/wwwh793/lanbeam/releases/latest/download/LanBeam.exe">下载 LanBeam.exe</a>
-            <a class="btn btn-ghost" href="https://github.com/wwwh793/lanbeam/releases/latest">查看发布包（含说明）</a>
+            <a class="btn btn-primary" href="https://github.com/wwwh793/lanbeam/releases/download/v1.7.2/LanBeam.exe">下载 LanBeam.exe</a>
+            <a class="btn btn-ghost" href="https://github.com/wwwh793/lanbeam/releases/tag/v1.7.2">查看发布包（含说明）</a>
           </div>
           <div class="dl-note">
             首次运行如果被 SmartScreen 拦下：点「更多信息」→「仍要运行」。程序未签名，这是正常提示。
@@ -323,6 +362,24 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
           <div class="fact"><span>系统</span><b>Windows 10 / 11 x64</b></div>
           <div class="fact"><span>许可</span><b>MIT</b></div>
           <div class="fact"><span>端口</span><b>TCP 47821 / UDP 47820</b></div>
+        </div>
+      </div>
+      <div class="download" style="margin-top:16px">
+        <div>
+          <h2>下载 LanBeam · Android</h2>
+          <p>APK 直接安装，不用应用商店。Android 7.0 及以上。</p>
+          <div class="dl-actions">
+            <a class="btn btn-primary" href="https://github.com/wwwh793/lanbeam/releases/download/android-v1.0.0/LanBeam-1.0.0.apk">下载安卓版 v1.0.0</a>
+            <a class="btn btn-ghost" href="https://github.com/wwwh793/lanbeam/releases/download/android-v1.0.0/LanBeam-1.0.0-android.zip">压缩包 + 安装说明</a>
+          </div>
+          <div class="dl-note">与 Windows、鸿蒙端互通，协议 v2。传原图、原视频，不压缩。</div>
+        </div>
+        <div class="dl-facts">
+          <div class="fact"><span>版本</span><b>v1.0.0</b></div>
+          <div class="fact"><span>大小</span><b>81 KB（apk）</b></div>
+          <div class="fact"><span>系统</span><b>Android 7.0+</b></div>
+          <div class="fact"><span>许可</span><b>MIT</b></div>
+          <div class="fact"><span>权限</span><b>局域网 / 通知 / 前台服务</b></div>
         </div>
       </div>
     </section>
@@ -347,7 +404,7 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
         </details>
         <details>
           <summary>支持手机、平板吗？</summary>
-          <p>目前的版本是 Windows 版。传输协议已经文档化，其他平台可以照着实现；做好了会在这里说。</p>
+          <p>支持。安卓端 1.0.0 已经发布，可以直接装 APK；鸿蒙端也做好了，正在准备上架。三端共用同一套协议，同一 Wi-Fi 下互相能发现、能收发。</p>
         </details>
         <details>
           <summary>传大文件会不会卡内存？</summary>
@@ -365,7 +422,7 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
 <footer>
   <div class="wrap foot">
     <span>© 2026 LanBeam · MIT License</span>
-    <span>Windows 10 / 11</span>
+    <span>Windows 10 / 11 · Android 7.0+</span>
     <div class="right">
       <a href="https://github.com/wwwh793/lanbeam">GitHub</a>
       <a href="https://github.com/wwwh793/lanbeam/releases">版本记录</a>

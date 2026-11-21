@@ -20,6 +20,6 @@ echo 完成。如果对方还是"能发不能收"，在对方电脑上也运行�
 echo 注意：运行前请先关掉 LanBeam，运行后再打开。
 pause
 """
-p = Path(r"C:\Users\Lenovo\Documents\deepseek workplace\20261114-局域网传文件\成品\放行防火墙（管理员运行）.bat")
+p = Path(__file__).resolve().parent.parent / "成品" / "放行防火墙（管理员运行）.bat"
 p.write_bytes(bat.replace("\n", "\r\n").encode("gbk"))
 print("bat ok", p.stat().st_size)
