@@ -74,15 +74,14 @@ header{
 .hero{padding:76px 0 40px; display:grid; grid-template-columns:1.05fr .95fr; gap:48px; align-items:center}
 .eyebrow{
   display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--accent);
+  word-break:keep-all;
   background:rgba(76,141,255,.10); border:1px solid rgba(76,141,255,.25);
   padding:5px 12px; border-radius:999px; margin-bottom:20px;
 }
 .hero h1{font-size:52px; line-height:1.14; margin:0 0 18px; letter-spacing:-.5px}
 .hero h1 span{color:var(--accent)}
 .hero p.lead{font-size:17px; color:var(--muted); margin:0 0 28px; max-width:560px}
-.cta{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px}
-.meta{display:flex; gap:18px; flex-wrap:wrap; color:var(--muted); font-size:13px}
-.meta b{color:var(--text); font-weight:600}
+.cta{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:6px}
 
 .shot-frame{
   border:1px solid var(--line); border-radius:14px; overflow:hidden;
@@ -127,20 +126,10 @@ section{padding:64px 0}
 @media (max-width:980px){.android-grid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:640px){.android-grid{grid-template-columns:1fr}}
 
-/* 三端状态 */
-.platforms{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px;font-size:12.5px;color:var(--muted)}
-.platforms .tag{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 11px;background:rgba(255,255,255,.02)}
-.platforms .tag b{color:var(--text);font-weight:600}
-.platforms .tag.ok{color:#5eead4;border-color:rgba(18,165,148,.35);background:rgba(18,165,148,.08)}
-
 /* 鸿蒙 */
-.harmony{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center}
-.harmony .badge{
-  display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#5eead4;
-  background:rgba(18,165,148,.10);border:1px solid rgba(18,165,148,.30);
-  padding:4px 11px;border-radius:999px;
-}
-.harmony h3{font-size:24px;margin:14px 0 10px;letter-spacing:-.2px}
+.harmony{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.harmony-copy{padding-top:4px}
+.harmony h3{font-size:24px;margin:0 0 10px;letter-spacing:-.2px}
 .harmony p{color:var(--muted);font-size:14.5px;margin:0 0 14px}
 .ticks{list-style:none;padding:0;margin:0 0 14px;display:grid;gap:8px}
 .ticks li{position:relative;padding-left:20px;font-size:14px;color:var(--muted)}
@@ -207,7 +196,6 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
   .hero h1{font-size:33px}
   section{padding:48px 0}
   .download{padding:22px}
-  .meta{font-size:12.5px}
 }
 </style>
 </head>
@@ -240,20 +228,8 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
         <h1>同一 Wi-Fi，<br><span>双击就传</span></h1>
         <p class="lead">电脑、手机、平板打开 LanBeam 就能互相看见：选中、发送，对方点一下「是」，文件就进了对方的文件夹。不注册、不限大小，传一半断了还能接着传。</p>
         <div class="cta">
-          <a class="btn btn-primary" href="#download">下载 Windows 版 v1.7.2</a>
+          <a class="btn btn-primary" href="#download">下载 Windows 版</a>
           <a class="btn btn-ghost" href="#android">手机版（安卓 / 鸿蒙）</a>
-        </div>
-        <div class="meta">
-          <span><b>约 29 MB</b> 单文件</span>
-          <span><b>免安装</b> 双击即用</span>
-          <span><b>不需要</b> 管理员权限</span>
-          <span><b>不走</b> 任何服务器</span>
-        </div>
-        <div class="platforms">
-          <span class="tag ok">三端齐了</span>
-          <span class="tag"><b>Windows</b> v1.7.2</span>
-          <span class="tag"><b>Android</b> v1.0.1</span>
-          <span class="tag"><b>HarmonyOS</b> v1.3.4 · 已上架</span>
         </div>
       </div>
       <div class="shot-frame"><img src="img/app-dark.png" alt="LanBeam 主界面"></div>
@@ -325,7 +301,7 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
       <div class="sec-head">
         <div class="kicker">Android</div>
         <h2>手机上也能收、也能发</h2>
-        <p>同一套协议，安卓端 1.0.1 从零实现：自动发现电脑、接收文件、发送文件 / 文件夹 / 相册，断了接着传，收件箱一键导出到「下载/LanBeam」。不申请存储权限，没有广告和统计。</p>
+        <p>同一套协议，安卓端从零实现：自动发现电脑、接收文件、发送文件 / 文件夹 / 相册，断了接着传，收件箱一键导出到「下载/LanBeam」。不申请存储权限，没有广告和统计。</p>
       </div>
       <div class="android-grid">
         <figure>
@@ -360,22 +336,19 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
 
     <section id="harmony">
       <div class="sec-head">
-        <div class="kicker">HarmonyOS</div>
-        <h2>鸿蒙版也上架了</h2>
-        <p>2026 年 11 月 20 日，鸿蒙版 1.3.4 通过华为审核，正式上架华为应用市场。到这儿，Windows、Android、HarmonyOS 三端都齐了——同一套协议，同一个 Wi-Fi 下互相发现、互相收发。</p>
+        <h2>鸿蒙版</h2>
+        <p>原生 ArkTS / ArkUI 写的，已上架华为应用市场。手机和平板都能装，和 Windows、安卓同一套协议，同一个 Wi-Fi 下互相发现、互相收发。</p>
       </div>
       <div class="harmony">
         <div class="harmony-copy">
-          <span class="badge">已上架华为应用市场</span>
           <h3>在应用市场搜索「LanBeam」</h3>
-          <p>原生 ArkTS / ArkUI 写的，不是套壳网页。手机和平板都能装。</p>
           <ul class="ticks">
             <li>自动发现同一 Wi-Fi 下的电脑、手机、平板，点一下就能发</li>
             <li>文件、文件夹、相册里的图片和视频，原样传，不压缩</li>
             <li>断了能续；传的过程中可以暂停、继续、取消</li>
             <li>手机收件箱 + 一键导出到系统「文件」；平板直存「下载/LanBeam」</li>
           </ul>
-          <p style="font-size:13px;margin-bottom:0">版本 1.3.4 ｜ 包名 com.moyuli.lanbeam</p>
+          <p style="font-size:13px;margin-bottom:0">包名 com.moyuli.lanbeam</p>
         </div>
         <div class="harmony-shots">
           <div class="shot-frame"><img src="img/harmony-main.png" alt="鸿蒙版主界面"></div>
@@ -456,14 +429,14 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
             <a class="btn btn-primary" href="https://appgallery.huawei.com/">打开华为应用市场</a>
             <a class="btn btn-ghost" href="#harmony">看看界面</a>
           </div>
-          <div class="dl-note">2026-11-20 通过审核上架。与 Windows、安卓端互通，协议 v2。</div>
+          <div class="dl-note">与 Windows、安卓端互通，协议 v2。传原图、原视频，不压缩。</div>
         </div>
         <div class="dl-facts">
           <div class="fact"><span>版本</span><b>v1.3.4</b></div>
           <div class="fact"><span>大小</span><b>约 240 KB（hap）</b></div>
           <div class="fact"><span>系统</span><b>HarmonyOS 手机 / 平板</b></div>
           <div class="fact"><span>许可</span><b>MIT</b></div>
-          <div class="fact"><span>上架</span><b>2026-11-20</b></div>
+          <div class="fact"><span>获取</span><b>华为应用市场</b></div>
         </div>
       </div>
     </section>
@@ -488,7 +461,7 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
         </details>
         <details>
           <summary>支持手机、平板吗？</summary>
-          <p>支持。鸿蒙版 1.3.4 已于 2026-11-20 通过审核、上架华为应用市场；安卓版 1.0.1 可以直接装 APK。三端共用同一套协议 v2，同一 Wi-Fi 下互相能发现、能收发。</p>
+          <p>支持。鸿蒙版已上架华为应用市场；安卓版可以直接装 APK。三端共用同一套协议 v2，同一 Wi-Fi 下互相能发现、能收发。</p>
         </details>
         <details>
           <summary>鸿蒙版和安卓版有什么区别？</summary>
