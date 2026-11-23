@@ -1,10 +1,10 @@
 # LanBeam · 局域网文件互传
 
-> 同一 Wi-Fi，双击就传。Windows 10 / 11 · Android 7.0+ · 免安装 · MIT
+> 同一 Wi-Fi，双击就传。Windows 10 / 11 · Android 7.0+ · HarmonyOS · 免安装 · MIT
 
 LanBeam 是一个跑在 Windows 上的局域网传文件小工具：两台电脑连同一个 Wi-Fi（或同一个交换机），各自打开它，左边两秒内就会出现对方。选中 → 发送文件或文件夹 → 对方点「是」，内容落在对方的 `下载\LanBeam`。
 
-不装客户端、不注册账号、不限大小、不过任何服务器。手机端（Android）用同一套协议，和电脑互相收发，源码在 [`android/`](android/)。
+不装客户端、不注册账号、不限大小、不过任何服务器。手机端（Android / HarmonyOS）用同一套协议，和电脑互相收发；安卓源码在 [`android/`](android/)，鸿蒙版已上架华为应用市场。
 
 **项目页面**：[https://wwwh793.github.io/lanbeam/](https://wwwh793.github.io/lanbeam/)
 
@@ -26,7 +26,8 @@ LanBeam 是一个跑在 Windows 上的局域网传文件小工具：两台电脑
 到 [Releases](https://github.com/wwwh793/lanbeam/releases) 下载：
 
 - **Windows**：[v1.7.2](https://github.com/wwwh793/lanbeam/releases/tag/v1.7.2) 的 `LanBeam.exe`，或者带使用说明的完整包；
-- **Android**：[Android 1.0.1](https://github.com/wwwh793/lanbeam/releases/tag/android-v1.0.1) 的 `LanBeam-1.0.1.apk`（Android 7.0+，约 81 KB），源码见 [`android/`](android/)。
+- **Android**：[Android 1.0.1](https://github.com/wwwh793/lanbeam/releases/tag/android-v1.0.1) 的 `LanBeam-1.0.1.apk`（Android 7.0+，约 81 KB），源码见 [`android/`](android/)；
+- **HarmonyOS**：1.3.4 已上架华为应用市场（2026-11-20 通过审核），在应用市场搜索「LanBeam」安装，手机 / 平板都支持。
 
 - 未签名，首次运行若被 SmartScreen 拦下：点「更多信息」→「仍要运行」。
 - 需要 Windows 10 / 11（64 位）。不需要管理员权限。
@@ -90,6 +91,7 @@ CHANGELOG.md    更新日志
 
 完整记录见 [CHANGELOG.md](CHANGELOG.md)。
 
+- **HarmonyOS 1.3.4**（2026-11-20 上架）：手机端改为应用内「收件箱 + 一键导出」，平板仍直存 `下载/LanBeam`；删掉自建隐私弹窗，统一走系统隐私托管；隐私标签按「用户内容 - 其他用户内容」如实申报。三端协议互通。
 - **v1.7.2**：优化设备发现时延与离线判定——广播即时回执、TTL 按对端广播周期自适应（8–30 s）、列表轮询 0.5 s；新增「发现 / 设备离线 / 设备重启」日志事件；修复对端重启后设备重复显示；配套 HarmonyOS 客户端 1.3.4。
 - **v1.7.1**：修复多网卡环境下广播地址计算错误导致的设备无法发现；对端存活时间 12 s → 20 s。
 - **v1.7.0**：设置新增「系统集成」——开机自启、右键菜单「通过 LanBeam 发送」；单实例转交与「待发送」流程；圆角统一、进度条重做。

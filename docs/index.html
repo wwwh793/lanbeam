@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LanBeam · 同一 Wi-Fi，双击就传</title>
-<meta name="description" content="LanBeam 是一个局域网传文件的小工具：Windows 免安装，安卓装 APK，同一 Wi-Fi 直接互传。不限大小、断点续传、文件夹原样保留。MIT 开源。">
-<meta property="og:title" content="LanBeam · 同一 Wi-Fi，双击就传">
-<meta property="og:description" content="免安装的 Windows 局域网传文件工具：断点续传、文件夹原样、右键直接发。">
+<title>LanBeam · 同一 Wi-Fi，双击就传｜Windows / Android / HarmonyOS</title>
+<meta name="description" content="LanBeam 是一个局域网传文件的小工具：Windows 免安装单文件、安卓装 APK、鸿蒙上架华为应用市场，同一 Wi-Fi 直接互传。不限大小、断点续传、文件夹原样保留。MIT 开源。">
+<meta property="og:title" content="LanBeam · Windows / Android / HarmonyOS 三端齐了">
+<meta property="og:description" content="同一 Wi-Fi 直接互传：Windows 免安装单文件，安卓装 APK，鸿蒙在华为应用市场下载。断点续传、文件夹原样、不过服务器。">
 <meta property="og:type" content="website">
 <meta property="og:image" content="img/app-dark.png">
 <link rel="icon" href="img/icon.png">
@@ -127,6 +127,27 @@ section{padding:64px 0}
 @media (max-width:980px){.android-grid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:640px){.android-grid{grid-template-columns:1fr}}
 
+/* 三端状态 */
+.platforms{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px;font-size:12.5px;color:var(--muted)}
+.platforms .tag{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 11px;background:rgba(255,255,255,.02)}
+.platforms .tag b{color:var(--text);font-weight:600}
+.platforms .tag.ok{color:#5eead4;border-color:rgba(18,165,148,.35);background:rgba(18,165,148,.08)}
+
+/* 鸿蒙 */
+.harmony{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center}
+.harmony .badge{
+  display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#5eead4;
+  background:rgba(18,165,148,.10);border:1px solid rgba(18,165,148,.30);
+  padding:4px 11px;border-radius:999px;
+}
+.harmony h3{font-size:24px;margin:14px 0 10px;letter-spacing:-.2px}
+.harmony p{color:var(--muted);font-size:14.5px;margin:0 0 14px}
+.ticks{list-style:none;padding:0;margin:0 0 14px;display:grid;gap:8px}
+.ticks li{position:relative;padding-left:20px;font-size:14px;color:var(--muted)}
+.ticks li::before{content:"";position:absolute;left:2px;top:8px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.harmony-shots{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.harmony-shots .shot-frame{border-radius:18px}
+
 /* 三步 */
 .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; counter-reset:step}
 .step{position:relative; padding-top:8px}
@@ -167,12 +188,18 @@ details p{color:var(--muted); font-size:14px; margin:10px 0 2px}
 footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted); font-size:13px}
 .foot{display:flex; gap:18px; flex-wrap:wrap; align-items:center}
 .foot .right{margin-left:auto; display:flex; gap:16px}
+.credit{
+  margin-top:22px; padding-top:16px; border-top:1px solid rgba(30,42,58,.7);
+  text-align:center; color:var(--muted); font-size:13px; letter-spacing:.4px;
+}
+.credit b{color:var(--text); font-weight:600}
 
 @media (max-width:980px){
   .hero{grid-template-columns:1fr; gap:32px; padding-top:52px}
   .hero h1{font-size:40px}
   .grid{grid-template-columns:repeat(2,1fr)}
   .download{grid-template-columns:1fr}
+  .harmony{grid-template-columns:1fr; gap:24px}
   .nav-links{display:none}
 }
 @media (max-width:640px){
@@ -192,7 +219,8 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
     <nav class="nav-links">
       <a href="#features">功能</a>
       <a href="#shots">截图</a>
-      <a href="#android">手机版</a>
+      <a href="#android">安卓版</a>
+      <a href="#harmony">鸿蒙版</a>
       <a href="#how">怎么用</a>
       <a href="#download">下载</a>
       <a href="#faq">常见问题</a>
@@ -208,18 +236,24 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
   <div class="wrap">
     <section class="hero">
       <div>
-        <div class="eyebrow">Windows 10 / 11 · Android 7.0+ · 免安装 · MIT 开源</div>
+        <div class="eyebrow">Windows · Android · HarmonyOS · 免安装 · MIT 开源</div>
         <h1>同一 Wi-Fi，<br><span>双击就传</span></h1>
-        <p class="lead">两台电脑打开 LanBeam 就能互相看见：选中、发送，对方点一下「是」，文件就进了对方的下载文件夹。不装客户端、不注册、不限大小，传一半断了还能接着传。</p>
+        <p class="lead">电脑、手机、平板打开 LanBeam 就能互相看见：选中、发送，对方点一下「是」，文件就进了对方的文件夹。不注册、不限大小，传一半断了还能接着传。</p>
         <div class="cta">
           <a class="btn btn-primary" href="#download">下载 Windows 版 v1.7.2</a>
-          <a class="btn btn-ghost" href="#android">安卓版 v1.0.1</a>
+          <a class="btn btn-ghost" href="#android">手机版（安卓 / 鸿蒙）</a>
         </div>
         <div class="meta">
           <span><b>约 29 MB</b> 单文件</span>
           <span><b>免安装</b> 双击即用</span>
           <span><b>不需要</b> 管理员权限</span>
           <span><b>不走</b> 任何服务器</span>
+        </div>
+        <div class="platforms">
+          <span class="tag ok">三端齐了</span>
+          <span class="tag"><b>Windows</b> v1.7.2</span>
+          <span class="tag"><b>Android</b> v1.0.1</span>
+          <span class="tag"><b>HarmonyOS</b> v1.3.4 · 已上架</span>
         </div>
       </div>
       <div class="shot-frame"><img src="img/app-dark.png" alt="LanBeam 主界面"></div>
@@ -324,6 +358,32 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
       </div>
     </section>
 
+    <section id="harmony">
+      <div class="sec-head">
+        <div class="kicker">HarmonyOS</div>
+        <h2>鸿蒙版也上架了</h2>
+        <p>2026 年 11 月 20 日，鸿蒙版 1.3.4 通过华为审核，正式上架华为应用市场。到这儿，Windows、Android、HarmonyOS 三端都齐了——同一套协议，同一个 Wi-Fi 下互相发现、互相收发。</p>
+      </div>
+      <div class="harmony">
+        <div class="harmony-copy">
+          <span class="badge">已上架华为应用市场</span>
+          <h3>在应用市场搜索「LanBeam」</h3>
+          <p>原生 ArkTS / ArkUI 写的，不是套壳网页。手机和平板都能装。</p>
+          <ul class="ticks">
+            <li>自动发现同一 Wi-Fi 下的电脑、手机、平板，点一下就能发</li>
+            <li>文件、文件夹、相册里的图片和视频，原样传，不压缩</li>
+            <li>断了能续；传的过程中可以暂停、继续、取消</li>
+            <li>手机收件箱 + 一键导出到系统「文件」；平板直存「下载/LanBeam」</li>
+          </ul>
+          <p style="font-size:13px;margin-bottom:0">版本 1.3.4 ｜ 包名 com.moyuli.lanbeam</p>
+        </div>
+        <div class="harmony-shots">
+          <div class="shot-frame"><img src="img/harmony-main.png" alt="鸿蒙版主界面"></div>
+          <div class="shot-frame"><img src="img/harmony-inbox.png" alt="鸿蒙版收件箱"></div>
+        </div>
+      </div>
+    </section>
+
     <section id="how">
       <div class="sec-head">
         <div class="kicker">How it works</div>
@@ -388,6 +448,24 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
           <div class="fact"><span>权限</span><b>局域网 / 通知 / 前台服务</b></div>
         </div>
       </div>
+      <div class="download" style="margin-top:16px">
+        <div>
+          <h2>下载 LanBeam · HarmonyOS</h2>
+          <p>已上架华为应用市场，在应用市场里搜索「LanBeam」安装。手机、平板都支持。</p>
+          <div class="dl-actions">
+            <a class="btn btn-primary" href="https://appgallery.huawei.com/">打开华为应用市场</a>
+            <a class="btn btn-ghost" href="#harmony">看看界面</a>
+          </div>
+          <div class="dl-note">2026-11-20 通过审核上架。与 Windows、安卓端互通，协议 v2。</div>
+        </div>
+        <div class="dl-facts">
+          <div class="fact"><span>版本</span><b>v1.3.4</b></div>
+          <div class="fact"><span>大小</span><b>约 240 KB（hap）</b></div>
+          <div class="fact"><span>系统</span><b>HarmonyOS 手机 / 平板</b></div>
+          <div class="fact"><span>许可</span><b>MIT</b></div>
+          <div class="fact"><span>上架</span><b>2026-11-20</b></div>
+        </div>
+      </div>
     </section>
 
     <section id="faq">
@@ -410,7 +488,11 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
         </details>
         <details>
           <summary>支持手机、平板吗？</summary>
-          <p>支持。安卓端 1.0.1 已经发布，可以直接装 APK；鸿蒙端也做好了，正在准备上架。三端共用同一套协议，同一 Wi-Fi 下互相能发现、能收发。</p>
+          <p>支持。鸿蒙版 1.3.4 已于 2026-11-20 通过审核、上架华为应用市场；安卓版 1.0.1 可以直接装 APK。三端共用同一套协议 v2，同一 Wi-Fi 下互相能发现、能收发。</p>
+        </details>
+        <details>
+          <summary>鸿蒙版和安卓版有什么区别？</summary>
+          <p>功能一样，界面按各自的系统规范写：鸿蒙端是原生 ArkTS / ArkUI，安卓端是原生 Java。手机端两边都把收到的文件放在应用内的收件箱里，再导出到系统「文件」；平板和电脑则直接存进「下载/LanBeam」。</p>
         </details>
         <details>
           <summary>传大文件会不会卡内存？</summary>
@@ -428,12 +510,13 @@ footer{border-top:1px solid var(--line); padding:28px 0 46px; color:var(--muted)
 <footer>
   <div class="wrap foot">
     <span>© 2026 LanBeam · MIT License</span>
-    <span>Windows 10 / 11 · Android 7.0+</span>
+    <span>Windows 10 / 11 · Android 7.0+ · HarmonyOS</span>
     <div class="right">
       <a href="https://github.com/wwwh793/lanbeam">GitHub</a>
       <a href="https://github.com/wwwh793/lanbeam/releases">版本记录</a>
     </div>
   </div>
+  <div class="wrap credit">by <b>Moyuli</b> and <b>DeepSeek</b></div>
 </footer>
 
 </body>
